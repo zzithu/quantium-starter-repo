@@ -7,9 +7,9 @@ import pandas as pd
 
 #First we deal with importing the data
 
-files = ['./data/daily_sales_data_0.csv',
- './data/daily_sales_data_1.csv',
- './data/daily_sales_data_2.csv']
+files = ['../data/daily_sales_data_0.csv',
+ '../data/daily_sales_data_1.csv',
+ '../data/daily_sales_data_2.csv']
 
 #make dataframes to work with them
 dataframes = []
@@ -35,7 +35,7 @@ for file_path in files:
 
 combined_df = pd.concat(dataframes, ignore_index=True)
 
-output_file = './combined_data_results.csv'
+output_file = '../data/combined_data_results.csv'
 combined_df.to_csv(output_file, index=False)
 
 print(f"Success printing to {output_file}")
