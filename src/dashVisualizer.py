@@ -1,3 +1,5 @@
+
+import os
 from dash import Dash, html, dcc, Input, Output, State
 import pandas as pd
 import plotly.express as px
@@ -5,7 +7,7 @@ import plotly.express as px
 app = Dash(__name__)
 
 # Load the entire dataset
-filePath = "../data/combined_data_results.csv"
+filePath = os.path.join(os.path.dirname(__file__), '../data/combined_data_results.csv')
 df_all = pd.read_csv(filePath)
 
 # Prepare the dataset with region codes
@@ -44,7 +46,7 @@ app.layout = html.Div([
      Input('data-load-option', 'value')],
     State('data-store', 'data')
 )
-def update_figure(start_date, end_date, selected_regions, load_option, stored_data):
+def update_figure(start_date, end_date, selected_regions, load_option, stored_data, df_all):
     # Convert stored data back to a DataFrame
     df_current = pd.DataFrame(stored_data)
 
@@ -83,6 +85,26 @@ def update_figure(start_date, end_date, selected_regions, load_option, stored_da
     )
 
     return fig
+
+#Test gave issues, create method to return number of regions essentially
+def get_filtered_data_length(start_date, end_date, selected_regions, load_option, df_all):
+    # Filter data based on the selected date range
+    if start_date and end_date:
+        df_filtered = df_all[(df_all['date'] >= start_date) & (df_all['date'] <= end_date)]
+        
+        # Apply row limit if selected
+        if load_option == 'limited':
+            df_filtered = df_filtered.head(1000)  # Limit to 1000 rows
+        
+        # Filter data based on selected regions
+        if selected_regions:
+            df_filtered = df_filtered[df_filtered['region'].isin(selected_regions)]
+    else:
+        df_filtered = df_all  # If no date range, use full data
+
+    return len(df_filtered)
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
